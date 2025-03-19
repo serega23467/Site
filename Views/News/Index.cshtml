@@ -1,0 +1,50 @@
+﻿@using Site.wwwroot.db
+ @model NewsPageModel
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Новости</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    </head>
+    <body>
+        <div class="container">
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="News" asp-route-category="Все" asp-action="Index">Все</a>
+                </li>
+                @foreach (var category in Model.Categories)
+                {
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="News" asp-route-category="@category.Id" asp-action="Index">@category.Title</a>
+                    </li>
+                }
+            </ul>
+            <div class="mt-3">
+                @foreach (var news in Model.NewsItems)
+                {
+                    <div class="card mb-3">
+                        <a href="@Url.Action("Details", "News", new { id = news.Id })">                  
+                            <div class="card-body">
+                                <div style="flex:1; ">
+                                    <p style="margin-right:50%; font-size:12px;">@ApplicationContext.GetCategoryName(news.Category)</p>
+                                    <h5 class="card-title">@news.Title</h5>
+                                    <p class="card-text">@news.Content.Substring(0, Math.Min(200, news.Content.Length))...</p>
+                                </div>
+                                @if (!string.IsNullOrEmpty(news.ImageUrl))
+                                {
+                                    string path = $"/images/{news.ImageUrl}";
+                                    <img src="@path" class="card-img-top" alt="@news.Title" style='width:max-content; height:150px; width:200px; margin-left:10px' />
+                                }
+                            </div>
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    </body>
+</html>
